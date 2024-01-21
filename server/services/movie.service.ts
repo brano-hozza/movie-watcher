@@ -10,6 +10,7 @@ export const useMovieService = () => {
       ...movie,
       id,
       watched: false,
+      tags: [],
     };
     const movies = await getMovies();
     movies.push(newMovie);
@@ -34,15 +35,7 @@ export const useMovieService = () => {
     const movies = await getMovies();
     const newMovies = movies.map((m) => {
       if (m.id === id) {
-        if (movie.title) {
-          m.title = movie.title;
-        }
-        if (movie.description) {
-          m.description = movie.description;
-        }
-        if (movie.watched !== undefined) {
-          m.watched = movie.watched;
-        }
+        m.watched = movie.watched;
       }
       return m;
     });

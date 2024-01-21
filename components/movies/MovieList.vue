@@ -14,6 +14,9 @@
       >
         <span :class="{ 'line-through': movie.watched }" class="group/title">
           &rarr; {{ movie.title }}
+          <span v-if="movie.tags.length" class="text-sm">
+            ({{ movie.tags.map((t) => getTag(t)!.name).join(", ") }})
+          </span>
           <span
             v-if="movie.description"
             class="hidden group-hover/title:block w-1/2 h-20 bg-white rounded-md border-2 border-neutral-400 p-2 absolute"
@@ -41,10 +44,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { Movie, UpdateMovieDTO } from "~/types";
+import type { Movie, Tag, UpdateMovieDTO } from "~/types";
 
 const props = defineProps<{
   movies: Movie[];
+  tags: Tag[];
   loading: boolean;
 }>();
 
@@ -52,8 +56,12 @@ const emit = defineEmits<{
   (event: "refresh"): Promise<void>;
 }>();
 
+const getTag = (id: string) => {
+  return props.tags.find((t) => t.id === id);
+};
+
 const deleteMovie = async (id: string) => {
-  const { data } = await useFetch(`/api/movies/${id}`, {
+  await useFetch(`/api/movies/${id}`, {
     method: "DELETE",
   });
   await emit("refresh");
@@ -75,7 +83,7 @@ const toggleMovie = async (movie: Movie) => {
   const dto: UpdateMovieDTO = {
     watched: !movie.watched,
   };
-  const { data } = await useFetch(`/api/movies/${movie.id}`, {
+  await useFetch(`/api/movies/${movie.id}`, {
     method: "PUT",
     body: JSON.stringify(dto),
   });

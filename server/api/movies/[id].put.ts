@@ -11,8 +11,8 @@ export default defineEventHandler(async (event) => {
     };
   }
   const dto = await readBody<UpdateMovieDTO>(event);
-  const movieService = useMovieService();
+  const service = useMovieService();
 
-  const movie = await movieService.updateMovie(id, dto);
+  const movie = await service.updateMovie(id, dto);
   return movie;
 });

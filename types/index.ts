@@ -3,15 +3,31 @@ export interface Movie {
   title: string;
   description?: string;
   watched: boolean;
+  tags: string[]; // Tag ids
 }
 
-export interface CreateMovieDTO {
-  title: string;
-  description?: string;
-}
+export type CreateMovieDTO = Omit<Movie, "id" | "watched">;
 
 export interface UpdateMovieDTO {
-  title?: string;
-  description?: string;
-  watched?: boolean;
+  watched: boolean;
 }
+
+export enum TagColor {
+  Red,
+  Green,
+  Blue,
+  Yellow,
+  Purple,
+  Orange,
+  Pink,
+  Grey,
+  Black,
+  White,
+}
+export interface Tag {
+  id: string;
+  name: string;
+  color: TagColor;
+}
+
+export type CreateTagDTO = Omit<Tag, "id">;

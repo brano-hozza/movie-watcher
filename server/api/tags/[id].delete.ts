@@ -1,4 +1,4 @@
-import { useMovieService } from "~/server/services";
+import { useTagService } from "~/server/services/tag.service";
 
 export default defineEventHandler(async (event) => {
   // ... Do whatever you want here
@@ -9,8 +9,8 @@ export default defineEventHandler(async (event) => {
       body: "Missing id",
     };
   }
-  const service = useMovieService();
+  const service = useTagService();
 
-  const movie = await service.deleteMovie(id);
-  return movie;
+  const tag = await service.deleteTag(id);
+  return tag;
 });
