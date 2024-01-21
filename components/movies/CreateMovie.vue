@@ -38,6 +38,12 @@
 </template>
 
 <script lang="ts" setup>
+import type { CreateMovieDTO } from "~/types";
+
+const emit = defineEmits<{
+  (event: "refresh"): Promise<void>;
+}>();
+
 const movieTitle = ref("");
 const movieDescription = ref("");
 
@@ -57,7 +63,7 @@ const createMovie = async () => {
     method: "POST",
     body: JSON.stringify(dto),
   });
-  await refreshMovies();
+  await emit("refresh");
 };
 </script>
 

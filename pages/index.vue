@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-4">
     <h1 class="text-5xl">My movie list</h1>
-    <CreateMovie />
+    <CreateMovie @refresh="refreshMovies" />
     <MovieList
-      :movies="movies"
+      :movies="movies ?? []"
       :loading="loadingMovies"
       @refresh="refreshMovies"
     />

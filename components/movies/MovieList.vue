@@ -5,9 +5,13 @@
     <h2 class="font-bold">Movies</h2>
     <hr />
     <div v-if="loading">Loading...</div>
-    <div v-else-if="!movies || movies.length === 0">No movies</div>
+    <div v-else-if="sortedMovies.length === 0">No movies</div>
     <ul v-else>
-      <li v-for="movie in movies" :key="movie.id" class="flex gap-2">
+      <li
+        v-for="movie in sortedMovies"
+        :key="movie.id"
+        class="flex gap-2 items-center"
+      >
         <span :class="{ 'line-through': movie.watched }" class="group/title">
           &rarr; {{ movie.title }}
           <span
@@ -18,16 +22,18 @@
             {{ movie.description }}
           </span>
         </span>
-        <button class="text-red-400" @click="deleteMovie(movie.id)">x</button>
+        <button class="text-red-400" @click="deleteMovie(movie.id)">
+          <Icon name="uil:ban" size="24" />
+        </button>
         <button
           v-if="!movie.watched"
           class="text-green-400"
-          @click="watchMovie(movie.id)"
+          @click="toggleMovie(movie)"
         >
-          <Icon name="uil:eye" />
+          <Icon name="uil:eye" size="24" />
         </button>
-        <button v-else class="text-green-400" @click="unwatchMovie(movie.id)">
-          <Icon name="uil:eye-slash" />
+        <button v-else class="text-green-400" @click="toggleMovie(movie)">
+          <Icon name="uil:eye-slash" size="24" />
         </button>
       </li>
     </ul>
@@ -35,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { UpdateMovieDTO } from "~/types";
+import type { Movie, UpdateMovieDTO } from "~/types";
 
 const props = defineProps<{
   movies: Movie[];
@@ -43,7 +49,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  refresh: () => Promise<void>;
+  (event: "refresh"): Promise<void>;
 }>();
 
 const deleteMovie = async (id: string) => {
@@ -53,22 +59,23 @@ const deleteMovie = async (id: string) => {
   await emit("refresh");
 };
 
-const watchMovie = async (id: string) => {
-  const dto: UpdateMovieDTO = {
-    watched: true,
-  };
-  const { data } = await useFetch(`/api/movies/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(dto),
+const sortedMovies = computed(() => {
+  return props.movies.sort((a, b) => {
+    if (a.watched && !b.watched) {
+      return 1;
+    }
+    if (!a.watched && b.watched) {
+      return -1;
+    }
+    return 0;
   });
-  await emit("refresh");
-};
+});
 
-const unwatchMovie = async (id: string) => {
+const toggleMovie = async (movie: Movie) => {
   const dto: UpdateMovieDTO = {
-    watched: false,
+    watched: !movie.watched,
   };
-  const { data } = await useFetch(`/api/movies/${id}`, {
+  const { data } = await useFetch(`/api/movies/${movie.id}`, {
     method: "PUT",
     body: JSON.stringify(dto),
   });

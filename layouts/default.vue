@@ -1,7 +1,9 @@
 <template>
-  <div class="w-screen h-screen p-4">
+  <div class="w-full h-full">
     <AppHeader />
-    <slot />
+    <div class="w-full h-full p-4">
+      <slot />
+    </div>
     <AppFooter />
   </div>
 </template>
