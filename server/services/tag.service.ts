@@ -3,7 +3,7 @@ import { CreateTagDTO, Tag } from "~/types";
 import { useMovieService } from "./movie.service";
 
 export const useTagService = () => {
-  const storage = useStorage("movie-watcher");
+  const storage = useStorage("vercel");
   const createTag = async (dto: CreateTagDTO): Promise<Tag> => {
     const id = crypto.randomUUID();
     const newTag: Tag = {
@@ -12,12 +12,12 @@ export const useTagService = () => {
     };
     const tags = await getTags();
     tags.push(newTag);
-    await storage.setItem("tags", tags);
+    await storage.setItem("watcher:tags", tags);
     return newTag;
   };
 
   const getTags = async (): Promise<Tag[]> => {
-    return (await storage.getItem<Tag[]>("tags")) ?? [];
+    return (await storage.getItem<Tag[]>("watcher:tags")) ?? [];
   };
 
   const deleteTag = async (id: string): Promise<void> => {
@@ -30,8 +30,8 @@ export const useTagService = () => {
       movie.tags = movie.tags.filter((tag) => tag !== id);
       return movie;
     });
-    await storage.setItem("movies", newMovies);
-    await storage.setItem("tags", newTags);
+    await storage.setItem("watcher:movies", newMovies);
+    await storage.setItem("watcher:tags", newTags);
   };
 
   return {

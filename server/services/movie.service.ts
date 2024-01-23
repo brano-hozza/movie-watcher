@@ -3,7 +3,7 @@ import { CreateMovieDTO, Movie } from "~/types";
 import { UpdateMovieDTO } from "../../types";
 
 export const useMovieService = () => {
-  const storage = useStorage("movie-watcher");
+  const storage = useStorage("vercel");
   const createMovie = async (movie: CreateMovieDTO): Promise<Movie> => {
     const id = crypto.randomUUID();
     const newMovie: Movie = {
@@ -14,18 +14,19 @@ export const useMovieService = () => {
     };
     const movies = await getMovies();
     movies.push(newMovie);
-    await storage.setItem("movies", movies);
+    await storage.setItem("watcher:movies", movies);
     return newMovie;
   };
 
   const getMovies = async (): Promise<Movie[]> => {
-    return (await storage.getItem<Movie[]>("movies")) ?? [];
+    const movies = await storage.getItem<Movie[]>("watcher:movies");
+    return movies ?? [];
   };
 
   const deleteMovie = async (id: string): Promise<void> => {
     const movies = await getMovies();
     const newMovies = movies.filter((movie) => movie.id !== id);
-    await storage.setItem("movies", newMovies);
+    await storage.setItem("watcher:movies", newMovies);
   };
 
   const updateMovie = async (
@@ -39,7 +40,7 @@ export const useMovieService = () => {
       }
       return m;
     });
-    await storage.setItem("movies", newMovies);
+    await storage.setItem("watcher:movies", newMovies);
   };
 
   return {

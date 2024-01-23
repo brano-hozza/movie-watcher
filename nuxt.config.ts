@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "nuxt-icon"],
   nitro: {
     storage: {
-      data: { driver: "vercelKV" },
+      vercel: { driver: "vercelKV" },
     },
   },
 });

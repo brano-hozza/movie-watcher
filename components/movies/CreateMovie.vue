@@ -50,11 +50,13 @@
       </ClientOnly>
     </span>
     <button
-      class="rounded-md bg-neutral-400 hover:bg-neutral-500 text-neutral-600 px-4 py-2 w-full"
+      class="rounded-md px-4 py-2 w-full"
       :class="{
         'cursor-not-allowed': !requirementsFilled,
-        'bg-green-400': requirementsFilled,
-        'hover:bg-green-500': requirementsFilled,
+        [requirementsFilled ? 'bg-green-400' : 'bg-neutral-400']: true,
+        [requirementsFilled
+          ? 'hover:bg-green-500'
+          : 'hover:bg-neutral-500']: true,
         'text-white': requirementsFilled,
       }"
       :disabled="!requirementsFilled"
@@ -135,6 +137,7 @@ const closeModal = async () => {
 };
 
 const createMovie = async () => {
+  if (!requirementsFilled.value) return;
   const dto: CreateMovieDTO = {
     title: movieTitle.value,
     description: movieDescription.value,
